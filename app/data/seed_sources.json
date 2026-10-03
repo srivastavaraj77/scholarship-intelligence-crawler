@@ -1,0 +1,107 @@
+[
+  {
+    "name": "National Scholarship Portal (NSP)",
+    "url": "https://scholarships.gov.in",
+    "type": "Government - Central",
+    "description": "Central government gateway for all national pre-matric and post-matric schemes.",
+    "is_primary": true
+  },
+  {
+    "name": "AICTE Portal (Pragati & Saksham)",
+    "url": "https://www.aicte-india.org/schemes/students-development-schemes",
+    "type": "Government - Central",
+    "description": "All India Council for Technical Education student development scholarship portal.",
+    "is_primary": true
+  },
+  {
+    "name": "DST INSPIRE Portal",
+    "url": "https://online-inspire.gov.in",
+    "type": "Government - Central",
+    "description": "Department of Science and Technology Innovation in Science Pursuit for Inspired Research.",
+    "is_primary": true
+  },
+  {
+    "name": "Ministry of Social Justice & Empowerment (NOS)",
+    "url": "https://nosmsje.gov.in",
+    "type": "Government - Central",
+    "description": "National Overseas Scholarship scheme for SC, nomadic and semi-nomadic tribes.",
+    "is_primary": true
+  },
+  {
+    "name": "MahaDBT Scholarship Portal",
+    "url": "https://mahadbt.maharashtra.gov.in",
+    "type": "Government - State",
+    "description": "Direct Benefit Transfer portal for Government of Maharashtra post-matric schemes.",
+    "is_primary": true
+  },
+  {
+    "name": "Karnataka State Scholarship Portal (SSP)",
+    "url": "https://ssp.postmatric.karnataka.gov.in",
+    "type": "Government - State",
+    "description": "Karnataka government unified post-matric e-attestation and scholarship portal.",
+    "is_primary": true
+  },
+  {
+    "name": "UP Scholarship Portal",
+    "url": "https://scholarship.up.gov.in",
+    "type": "Government - State",
+    "description": "Uttar Pradesh Dashmottar and pre-matric scholarship and fee reimbursement portal.",
+    "is_primary": true
+  },
+  {
+    "name": "West Bengal SVMCM Portal",
+    "url": "https://svmcm.wbhed.gov.in",
+    "type": "Government - State",
+    "description": "Swami Vivekananda Merit-cum-Means scholarship portal for West Bengal students.",
+    "is_primary": true
+  },
+  {
+    "name": "Reliance Foundation Scholarships",
+    "url": "https://scholarships.reliancefoundation.org",
+    "type": "Corporate CSR",
+    "description": "Reliance Foundation Undergraduate and Postgraduate flagship CSR scholarship portal.",
+    "is_primary": true
+  },
+  {
+    "name": "Tata Trusts Education Grants",
+    "url": "https://www.tatatrusts.org/our-work/individual-grants-programme/education-grants",
+    "type": "Corporate CSR",
+    "description": "Tata Trusts medical, healthcare and higher education study grants portal.",
+    "is_primary": true
+  },
+  {
+    "name": "Kotak Education Foundation (Kotak Kanya)",
+    "url": "https://kotakeducation.org/kotak-kanya-scholarship",
+    "type": "Corporate CSR",
+    "description": "Kotak Mahindra Group CSR initiative supporting girl students in professional courses.",
+    "is_primary": true
+  },
+  {
+    "name": "ONGC Foundation Scholarships",
+    "url": "https://www.ongcscholar.org",
+    "type": "Corporate CSR",
+    "description": "ONGC CSR scholarship program for meritorious SC, ST, OBC and EWS engineering/medical students.",
+    "is_primary": true
+  },
+  {
+    "name": "K.C. Mahindra Education Trust",
+    "url": "https://www.kcmet.org/what-we-do-scholarships-all-india-talent.aspx",
+    "type": "Foundation / Trust",
+    "description": "Mahindra Group foundation providing All India Talent Scholarships for polytechnic diploma students.",
+    "is_primary": true
+  },
+  {
+    "name": "Sitaram Jindal Foundation",
+    "url": "https://www.sitaramjindalfoundation.org/scholarships.php",
+    "type": "Foundation / Trust",
+    "description": "Sitaram Jindal charity trust supporting underprivileged students across India.",
+    "is_primary": true
+  },
+  {
+    "name": "Buddy4Study Indian Portal",
+    "url": "https://www.buddy4study.com/scholarships",
+    "type": "Aggregator",
+    "description": "Aggregator portal used for discovering announcements and tracking updates.",
+    "is_primary": false
+  }
+]

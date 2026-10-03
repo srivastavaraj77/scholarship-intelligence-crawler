@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scholarship Intelligence Crawler | Atlas Funding Repository</title>
+    <meta name="description" content="Automated scholarship intelligence engine with official source verification, mathematical confidence scoring, anti-hallucination evidence tracking, and change detection for Indian students.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand-group">
+                <div class="brand-logo">
+                    <span class="logo-icon">⚡</span>
+                </div>
+                <div class="brand-info">
+                    <h1 class="brand-title">Scholarship Intelligence Crawler</h1>
+                    <p class="brand-subtitle">Atlas Funding Engine • Authentic Verification & Change Detection</p>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button id="btn-run-crawl" class="btn btn-primary" title="Trigger automated crawler & verification cycle">
+                    <span class="btn-icon">🚀</span> Run Crawler
+                </button>
+                <button id="btn-simulate-run2" class="btn btn-secondary" title="Simulate Run 2 portal mutations & detect changes">
+                    <span class="btn-icon">⚡</span> Simulate Run 2 (Diff)
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-outline" id="export-dropdown-btn">
+                        <span class="btn-icon">📥</span> Export
+                    </button>
+                    <div class="dropdown-menu" id="export-menu">
+                        <a href="/api/export/json" target="_blank" class="dropdown-item">Download JSON</a>
+                        <a href="/api/export/csv" target="_blank" class="dropdown-item">Download CSV</a>
+                    </div>
+                </div>
+                <div class="system-status-badge">
+                    <span class="pulse-dot"></span> Live Engine
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="app-main">
+        <!-- KPI Metrics Grid -->
+        <section class="metrics-section" aria-label="Overview Metrics">
+            <div class="metric-card" id="card-total-discovered">
+                <div class="metric-icon bg-indigo">📡</div>
+                <div class="metric-data">
+                    <span class="metric-label">Total Discovered</span>
+                    <span class="metric-value" id="metric-total">24</span>
+                </div>
+            </div>
+
+            <div class="metric-card" id="card-verified">
+                <div class="metric-icon bg-emerald">✅</div>
+                <div class="metric-data">
+                    <span class="metric-label">Verified (≥95%)</span>
+                    <span class="metric-value text-emerald" id="metric-verified">20</span>
+                </div>
+            </div>
+
+            <div class="metric-card" id="card-review-required">
+                <div class="metric-icon bg-amber">⚠️</div>
+                <div class="metric-data">
+                    <span class="metric-label">Review Required</span>
+                    <span class="metric-value text-amber" id="metric-review">4</span>
+                </div>
+            </div>
+
+            <div class="metric-card" id="card-active">
+                <div class="metric-icon bg-cyan">🎯</div>
+                <div class="metric-data">
+                    <span class="metric-label">Active Schemes</span>
+                    <span class="metric-value text-cyan" id="metric-active">22</span>
+                </div>
+            </div>
+
+            <div class="metric-card" id="card-avg-confidence">
+                <div class="metric-icon bg-purple">📊</div>
+                <div class="metric-data">
+                    <span class="metric-label">Avg Confidence</span>
+                    <span class="metric-value text-purple" id="metric-avg-conf">92.7%</span>
+                </div>
+            </div>
+
+            <div class="metric-card" id="card-mutations">
+                <div class="metric-icon bg-rose">📜</div>
+                <div class="metric-data">
+                    <span class="metric-label">Detected Changes</span>
+                    <span class="metric-value text-rose" id="metric-mutations">3</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter & Search Bar -->
+        <section class="filter-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="search-input" placeholder="Search by scholarship title, ministry, CSR provider, or criteria..." autocomplete="off">
+                <button id="search-clear-btn" class="search-clear hidden">&times;</button>
+            </div>
+
+            <div class="filters-row">
+                <div class="filter-item">
+                    <label for="filter-source-type">Source Type</label>
+                    <select id="filter-source-type" class="form-select">
+                        <option value="ALL">All Source Types</option>
+                        <option value="Government - Central">Central Government</option>
+                        <option value="Government - State">State Government</option>
+                        <option value="Corporate CSR">Corporate CSR</option>
+                        <option value="Foundation / Trust">Foundation / Trust</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filter-status">Lifecycle Status</label>
+                    <select id="filter-status" class="form-select">
+                        <option value="ALL">All Statuses</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="EXPIRING_SOON">Expiring Soon (≤15d)</option>
+                        <option value="EXPIRED">Expired / Archived</option>
+                        <option value="REVIEW_REQUIRED">Review Required</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filter-verification">Verification</label>
+                    <select id="filter-verification" class="form-select">
+                        <option value="ALL">All Records</option>
+                        <option value="VERIFIED">Verified (Score ≥ 95%)</option>
+                        <option value="REVIEW_REQUIRED">Review Required (< 95%)</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filter-education">Education Level</label>
+                    <select id="filter-education" class="form-select">
+                        <option value="ALL">All Levels</option>
+                        <option value="Undergraduate">Undergraduate (UG/B.Tech/MBBS)</option>
+                        <option value="Postgraduate">Postgraduate (PG/Masters)</option>
+                        <option value="School">School (Class 1-12)</option>
+                        <option value="Diploma">Diploma / Polytechnic</option>
+                    </select>
+                </div>
+
+                <div class="filter-item">
+                    <label for="filter-domicile">Domicile / State</label>
+                    <select id="filter-domicile" class="form-select">
+                        <option value="ALL">All India & States</option>
+                        <option value="All India">All India (Pan-India)</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                    </select>
+                </div>
+
+                <div class="view-toggles">
+                    <button id="view-grid-btn" class="toggle-btn active" title="Grid View">⊞</button>
+                    <button id="view-table-btn" class="toggle-btn" title="Table View">☰</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Results Section -->
+        <section class="results-section">
+            <div class="results-header">
+                <div class="results-count-group">
+                    <h2 class="results-heading">Scholarship Opportunities</h2>
+                    <span class="count-badge" id="visible-count-badge">Showing 24 opportunities</span>
+                </div>
+                
+                <div class="sort-group">
+                    <label for="sort-select">Sort By:</label>
+                    <select id="sort-select" class="form-select-sm">
+                        <option value="confidence_score-desc">Highest Confidence</option>
+                        <option value="amount_numerical-desc">Highest Funding Amount</option>
+                        <option value="closing_date-asc">Nearest Deadline</option>
+                        <option value="name-asc">Alphabetical (A-Z)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="scholarships-grid" class="scholarships-grid">
+                <!-- Dynamically populated cards -->
+            </div>
+
+            <!-- Table Container -->
+            <div id="scholarships-table-wrapper" class="scholarships-table-wrapper hidden">
+                <table class="data-table" id="scholarships-table">
+                    <thead>
+                        <tr>
+                            <th>Confidence</th>
+                            <th>Scholarship & Provider</th>
+                            <th>Source Type</th>
+                            <th>Benefit Amount</th>
+                            <th>Eligibility & Income</th>
+                            <th>Deadline</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scholarships-table-body">
+                        <!-- Dynamically populated rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden">
+                <div class="empty-icon">🔎</div>
+                <h3>No matching scholarships found</h3>
+                <p>Try adjusting your search keywords or filter criteria.</p>
+                <button class="btn btn-outline" id="btn-reset-filters">Reset Filters</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detailed Inspection Modal / Drawer -->
+    <div id="detail-modal" class="modal-backdrop hidden" aria-hidden="true" role="dialog">
+        <div class="modal-container">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-badges" id="modal-badges-top"></div>
+                    <h2 id="modal-title" class="modal-title">Scholarship Details</h2>
+                    <p id="modal-provider" class="modal-provider">Provider Name</p>
+                </div>
+                <button id="modal-close-btn" class="modal-close" aria-label="Close modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Navigation Tabs -->
+                <div class="modal-tabs">
+                    <button class="tab-btn active" data-tab="tab-overview">Overview & Criteria</button>
+                    <button class="tab-btn" data-tab="tab-confidence">Why this score? (Audit)</button>
+                    <button class="tab-btn" data-tab="tab-evidence">Source Evidence Ledger</button>
+                    <button class="tab-btn" data-tab="tab-history">Change History (<span id="modal-history-count">0</span>)</button>
+                </div>
+
+                <!-- Tab 1: Overview -->
+                <div id="tab-overview" class="tab-pane active">
+                    <div class="detail-grid">
+                        <div class="detail-card">
+                            <span class="detail-label">Financial Benefit</span>
+                            <div class="detail-value highlight-green" id="modal-amount">-</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-label">Application Deadline</span>
+                            <div class="detail-value" id="modal-deadline">-</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-label">Target Education Level</span>
+                            <div class="detail-value" id="modal-education">-</div>
+                        </div>
+                        <div class="detail-card">
+                            <span class="detail-label">Domicile / Residency</span>
+                            <div class="detail-value" id="modal-domicile">-</div>
+                        </div>
+                    </div>
+
+                    <div class="section-block">
+                        <h3 class="section-title">Eligibility Criteria</h3>
+                        <p id="modal-eligibility-summary" class="text-body">-</p>
+                        
+                        <div class="criteria-pills">
+                            <div class="pill-item">
+                                <span class="pill-title">Income Limit:</span>
+                                <span id="modal-income" class="pill-val">-</span>
+                            </div>
+                            <div class="pill-item">
+                                <span class="pill-title">Academic Cutoff:</span>
+                                <span id="modal-academic" class="pill-val">-</span>
+                            </div>
+                            <div class="pill-item">
+                                <span class="pill-title">Gender:</span>
+                                <span id="modal-gender" class="pill-val">-</span>
+                            </div>
+                            <div class="pill-item">
+                                <span class="pill-title">Social Category:</span>
+                                <span id="modal-category" class="pill-val">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-block">
+                        <h3 class="section-title">Mandatory Documents</h3>
+                        <ul id="modal-documents-list" class="docs-list"></ul>
+                    </div>
+
+                    <div class="section-block links-block">
+                        <h3 class="section-title">Authoritative URLs & Gateways</h3>
+                        <div class="links-row">
+                            <a id="modal-official-url" href="#" target="_blank" class="btn btn-outline">
+                                🔗 Primary Official Portal
+                            </a>
+                            <a id="modal-apply-url" href="#" target="_blank" class="btn btn-primary">
+                                📝 Direct Official Application Link
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Why this score? (Mathematical Confidence Audit) -->
+                <div id="tab-confidence" class="tab-pane">
+                    <div class="score-hero-card">
+                        <div class="score-circle-group">
+                            <div class="score-circle-val" id="audit-score-val">99.0%</div>
+                            <span class="score-circle-sub" id="audit-status-badge">VERIFIED</span>
+                        </div>
+                        <div class="score-hero-info">
+                            <h3>Deterministic 100-Point Mathematical Confidence Rubric</h3>
+                            <p>Calculated directly against primary domain authority, live HTTP response, direct official application gateways, verbatim text groundings, and temporal active cycle status. Never generated arbitrarily by LLMs.</p>
+                        </div>
+                    </div>
+
+                    <div class="rubric-bars-grid" id="rubric-bars">
+                        <!-- Progress bars for 5 rubric categories -->
+                    </div>
+
+                    <div class="audit-log-box">
+                        <h4>Audit Trail & Reasoning Trace:</h4>
+                        <ul id="audit-notes-list" class="audit-list"></ul>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Source Evidence Ledger -->
+                <div id="tab-evidence" class="tab-pane">
+                    <div class="evidence-intro">
+                        <p><strong>Anti-Hallucination Assurance:</strong> Every extracted attribute is mapped to its verbatim source excerpt. If a field was omitted in the source announcement, it is explicitly set to <code>Not specified</code> and never fabricated.</p>
+                    </div>
+
+                    <div id="evidence-ledger-container" class="evidence-ledger-container">
+                        <!-- Populated with field citation cards -->
+                    </div>
+                </div>
+
+                <!-- Tab 4: Change History Timeline -->
+                <div id="tab-history" class="tab-pane">
+                    <div class="history-intro">
+                        <p><strong>Change Detection Log:</strong> Complete timeline of detected portal updates across crawler runs (Run 1 -> Run 2). Preserves historical diffs without destructive overwriting.</p>
+                    </div>
+
+                    <div id="history-timeline" class="history-timeline">
+                        <!-- Populated with mutation items -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
