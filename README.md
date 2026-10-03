@@ -163,7 +163,7 @@ $$\text{Confidence Score} = S_{\text{authority}} + S_{\text{live}} + S_{\text{ap
 Clone the repository and install dependencies (Python 3.11+ recommended):
 
 ```bash
-git clone https://github.com/your-username/scholarship-intelligence-crawler.git
+git clone https://github.com/srivastavaraj77/scholarship-intelligence-crawler.git
 cd scholarship-intelligence-crawler
 
 pip install -r requirements.txt

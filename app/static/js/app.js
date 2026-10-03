@@ -44,11 +44,55 @@ const metricMutations = document.getElementById('metric-mutations');
 
 // Initialize on DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
+    initTheme();
     setupEventListeners();
     loadDashboardData();
 });
 
+function initTheme() {
+    const savedTheme = localStorage.getItem('scholarship_app_theme') || 'cyan';
+    setTheme(savedTheme, false);
+}
+
+function setTheme(theme, showNotification = true) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('scholarship_app_theme', theme);
+    document.querySelectorAll('.theme-option').forEach(btn => {
+        if (btn.getAttribute('data-theme') === theme) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
+
 function setupEventListeners() {
+    // Theme dropdown toggle
+    const themeBtn = document.getElementById('theme-dropdown-btn');
+    const themeMenu = document.getElementById('theme-menu');
+    const exportBtn = document.getElementById('export-dropdown-btn');
+    const exportMenu = document.getElementById('export-menu');
+
+    if (themeBtn && themeMenu) {
+        themeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (exportMenu) exportMenu.classList.remove('show');
+            themeMenu.classList.toggle('show');
+        });
+
+        document.querySelectorAll('.theme-option').forEach(opt => {
+            opt.addEventListener('click', (e) => {
+                const chosen = e.currentTarget.getAttribute('data-theme');
+                const themeName = e.currentTarget.textContent.trim();
+                setTheme(chosen);
+                themeMenu.classList.remove('show');
+                showToast(`Palette switched to ${themeName}`, 'success');
+            });
+        });
+
+        document.addEventListener('click', () => themeMenu.classList.remove('show'));
+    }
+
     // Search input with debounce
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
@@ -107,13 +151,14 @@ function setupEventListeners() {
     tableBtn.addEventListener('click', () => switchView('table'));
 
     // Export dropdown toggle
-    const exportBtn = document.getElementById('export-dropdown-btn');
-    const exportMenu = document.getElementById('export-menu');
-    exportBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        exportMenu.classList.toggle('show');
-    });
-    document.addEventListener('click', () => exportMenu.classList.remove('show'));
+    if (exportBtn && exportMenu) {
+        exportBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (themeMenu) themeMenu.classList.remove('show');
+            exportMenu.classList.toggle('show');
+        });
+        document.addEventListener('click', () => exportMenu.classList.remove('show'));
+    }
 
     // Crawler Triggers
     document.getElementById('btn-run-crawl').addEventListener('click', handleRunCrawler);
@@ -271,6 +316,16 @@ function getConfidenceClass(score) {
     return 'conf-low';
 }
 
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
 function createScholarshipCard(s) {
     const confClass = getConfidenceClass(s.confidence_score);
     const statusClass = getStatusBadgeClass(s.current_status);
@@ -280,37 +335,37 @@ function createScholarshipCard(s) {
         <article class="scholarship-card" id="card-${s.id}">
             <div class="card-top">
                 <div class="card-badges">
-                    <span class="badge badge-source">${s.source_type}</span>
+                    <span class="badge badge-source">${escapeHtml(s.source_type)}</span>
                     <span class="confidence-chip ${confClass}">
                         ${s.confidence_score.toFixed(1)}% ${s.verification_status === 'VERIFIED' ? '✓ VERIFIED' : '⚠️ REVIEW'}
                     </span>
                 </div>
-                <h3 class="card-title">${s.name}</h3>
-                <p class="card-provider">${s.provider}</p>
+                <h3 class="card-title" title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</h3>
+                <p class="card-provider" title="${escapeHtml(s.provider)}">${escapeHtml(s.provider)}</p>
                 
                 <div class="card-facts">
-                    <div class="fact-item">
+                    <div class="fact-item fact-item-full">
                         <span class="fact-label">Benefit</span>
-                        <span class="fact-val highlight-green" title="${s.amount_benefit}">${s.amount_benefit}</span>
+                        <span class="fact-val highlight-green fact-val-wrap" title="${escapeHtml(s.amount_benefit)}">${escapeHtml(s.amount_benefit)}</span>
                     </div>
                     <div class="fact-item">
                         <span class="fact-label">Deadline</span>
-                        <span class="fact-val">${s.closing_date}</span>
-                    </div>
-                    <div class="fact-item">
-                        <span class="fact-label">Income Limit</span>
-                        <span class="fact-val" title="${s.income_criteria}">${s.income_criteria}</span>
+                        <span class="fact-val fact-val-truncate">${escapeHtml(s.closing_date)}</span>
                     </div>
                     <div class="fact-item">
                         <span class="fact-label">Residency</span>
-                        <span class="fact-val">${s.domicile_state}</span>
+                        <span class="fact-val fact-val-truncate" title="${escapeHtml(s.domicile_state)}">${escapeHtml(s.domicile_state)}</span>
+                    </div>
+                    <div class="fact-item fact-item-full">
+                        <span class="fact-label">Income Limit</span>
+                        <span class="fact-val fact-val-truncate" title="${escapeHtml(s.income_criteria)}">${escapeHtml(s.income_criteria)}</span>
                     </div>
                 </div>
             </div>
 
             <div class="card-bottom">
                 <div class="card-meta">
-                    <span class="badge ${statusClass}">${s.current_status.replace('_', ' ')}</span>
+                    <span class="badge ${statusClass}">${escapeHtml(s.current_status.replace('_', ' '))}</span>
                     <span class="evidence-tag">📎 ${evidenceCount} verified citations</span>
                 </div>
                 <button class="btn btn-outline btn-inspect" data-id="${s.id}">

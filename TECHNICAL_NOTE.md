@@ -1,9 +1,9 @@
 # Technical Note: Scholarship Intelligence Crawler
 
 **Project:** Scholarship Intelligence Engine & Verification Pipeline for Atlas Funding  
-**Author:** AI Engineer Candidate  
+**Author:** Rajvardhan Srivastav  
 **Date:** October 2026  
-**Target Repository:** `https://github.com/.../scholarship-intelligence-crawler`
+**Target Repository:** `https://github.com/srivastavaraj77/scholarship-intelligence-crawler.git`
 
 ---
 

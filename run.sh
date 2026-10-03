@@ -9,14 +9,23 @@ echo "==========================================================================
 echo "⚡ Scholarship Intelligence Crawler (Edxso AI Engineer Intern Assignment 2)"
 echo "================================================================================"
 
+# Determine active python binary with installed dependencies
+if command -v python &>/dev/null && python -c "import pydantic" &>/dev/null; then
+    PYTHON_CMD="python"
+elif command -v python3 &>/dev/null && python3 -c "import pydantic" &>/dev/null; then
+    PYTHON_CMD="python3"
+else
+    PYTHON_CMD="python3"
+fi
+
 # 1. Initialize and Seed Database
 echo "📦 [1/3] Seeding 24 Authentic Indian Scholarships..."
-python3 scripts/seed_data.py
+$PYTHON_CMD scripts/seed_data.py
 
 # 2. Run Test Suite
 echo ""
 echo "🧪 [2/3] Running Validation Test Suite..."
-python3 -m pytest tests/
+$PYTHON_CMD -m pytest tests/
 
 # 3. Start Web Dashboard
 echo ""
@@ -26,4 +35,5 @@ echo "👉 API Documentation available at http://localhost:8000/docs"
 echo "Press Ctrl+C to terminate."
 echo ""
 
-uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+$PYTHON_CMD -m uvicorn app.api.main:app --host 0.0.0.0 --port 8000 --reload
+
